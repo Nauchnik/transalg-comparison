@@ -1,5 +1,5 @@
 Problem  Number of known last bits of secret key
 Bivium   32
 Trivium  144
-Grain    110
+Grain    105
 A5/1     23
