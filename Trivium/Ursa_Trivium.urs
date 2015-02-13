@@ -1,4 +1,4 @@
-﻿
+
 nkeylen = 288;
 nstreamlen = 300;
 nlenA = 93;

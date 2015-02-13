@@ -1,4 +1,4 @@
-﻿
+
 nkeylen = 288;
 nstreamlen = 300;
 nlenA = 93;
@@ -12,7 +12,10 @@ for(ni = 0; ni < nkeylen; ni++)
 
 for(ni = 0; ni < nstreamlen; ni++)
 {
-	bstream[ni] = breg[65] ^^ breg[92] ^^ breg[161] ^^ breg[176] ^^ breg[242] ^^ breg[287];
+	bt1 = breg[65] ^^ breg[92] ^^ breg[161];
+	bt2 = breg[176] ^^ breg[242] ^^ breg[287];
+
+	bstream[ni] = bt1 ^^ bt2;
 
 	bt1 = breg[65] ^^ (breg[90] && breg[91]) ^^ breg[92] ^^ breg[170];
 	bt2 = breg[161] ^^ (breg[174] && breg[175]) ^^ breg[176] ^^ breg[263];
