@@ -1,4 +1,4 @@
-﻿
+
 nstreamlen = 128;
 nlenA = 19;
 nlenB = 22;
@@ -24,8 +24,10 @@ for(ni = 0; ni < nlenC; ni++)
 
 for(ni = 0; ni < nstreamlen; ni++)
 {
+	/* Функция мажорити */
 	bmaj = (bregA[nmidA] && bregB[nmidB]) || (bregA[nmidA] && bregC[nmidC]) || (bregB[nmidB] && bregC[nmidC]);
 
+	/* Сдвиг 1-го регистра */
 	b_is_regA_shift = !(bmaj ^^ bregA[nmidA]);
 	b_regA_feedback = bregA[18] ^^ bregA[17] ^^ bregA[16] ^^ bregA[13];
 	for(nj = nlenA - 1; nj > 0; nj = nj - 1)
@@ -34,6 +36,7 @@ for(ni = 0; ni < nstreamlen; ni++)
 	}
 	bregA[0] = ite(b_is_regA_shift, b_regA_feedback, bregA[0]);
 
+	/* Сдвиг 2-го регистра */
 	b_is_regB_shift = !(bmaj ^^ bregB[nmidB]);
 	b_regB_feedback = bregB[21] ^^ bregB[20];
 	for(nj = nlenB - 1; nj > 0; nj = nj - 1)
@@ -42,6 +45,7 @@ for(ni = 0; ni < nstreamlen; ni++)
 	}
 	bregB[0] = ite(b_is_regB_shift, b_regB_feedback, bregB[0]);
 
+	/* Сдвиг 3-го регистра */
 	b_is_regC_shift = !(bmaj ^^ bregC[nmidC]);
 	b_regC_feedback = bregC[22] ^^ bregC[21] ^^ bregC[20] ^^ bregC[7];
 	for(nj = nlenC - 1; nj > 0; nj = nj - 1)
@@ -50,5 +54,6 @@ for(ni = 0; ni < nstreamlen; ni++)
 	}
 	bregC[0] = ite(b_is_regC_shift, b_regC_feedback, bregC[0]);
 
+	/* Очередной бит выхода */
 	bstream[ni] = bregA[18] ^^ bregB[21] ^^ bregC[22];
 }
