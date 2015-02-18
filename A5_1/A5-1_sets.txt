@@ -1,0 +1,18 @@
+Decomposition sets for logical cryptanalysis of A5/1 keystream generator
+Numeration from 1
+Clock bits are: 9 30 52
+
+31 variables:
+1 2 3 4 5 6 7 8 9
+20 21 22 23 24 25 26 27 28 29 30
+42 43 44 45 46 47 48 49 50 51 52
+---
+28 variables:
+2 3 4 5 6 7 8 9
+21 22 23 24 25 26 27 28 29 30
+43 44 45 46 47 48 49 50 51 52
+---
+25 variables:
+3 4 5 6 7 8 9
+22 23 24 25 26 27 28 29 30
+44 45 46 47 48 49 50 51 52
