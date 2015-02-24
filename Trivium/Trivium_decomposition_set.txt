@@ -1,0 +1,2 @@
+Decomposition set for logical cryptanalysis of Bivium keystream generator
+All 111 variables of 3rd register and 31 last variables from 2st register. 

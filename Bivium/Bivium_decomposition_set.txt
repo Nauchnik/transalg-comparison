@@ -1,0 +1,2 @@
+Decomposition set for logical cryptanalysis of Bivium keystream generator
+last 30 variables of 2nd shift register
