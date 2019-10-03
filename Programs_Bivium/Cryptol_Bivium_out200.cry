@@ -1,0 +1,44 @@
+Bivium_stream : [93] -> [84] -> [inf]
+Bivium_stream R1 R2 = stream
+	where
+	(stream, ra, rb) = shift_regs R1 R2 
+
+type N = 200
+Bivium : ([93], [84]) -> [N]Bit
+Bivium (reg1, reg2) = keystream //bursts
+  where
+    //keystream =  drop`{K}(take`{N+K}(Geffe_stream reg1 reg2 reg3))
+    keystream =  take`{N} (Bivium_stream reg1 reg2)
+    bursts = groupBy`{1} keystream
+
+
+shift : {d} (fin d, d >=1) => [d] -> Bit -> [d]
+shift fill bit = fills
+	where
+		fills = [bit]#(drop`{1} (fill >> 1))
+
+(S,Rr1,Rr2) = shift_regs a c
+
+shift_regs : {d,e} (fin d, fin e, d >=1, e >=1) => [d] -> [e] -> ([inf],[inf][d],[inf][e])
+shift_regs r1 r2 = (stream, regA, regB)
+	where
+		//stream = [(f1 @ 0) ^ (f2 @ 0) | f1 <- regA | f2 <-regB]
+		
+		ss1 = [(f1 @ 65) ^ (f1 @ 92) | f1 <- regA]
+		ss2 = [(f2 @ 68) ^ (f2 @ 83) | f2 <- regB]
+
+		//stream = [(f1 @ 65) ^ (f1 @ 92) ^ (f2 @ 68) ^ (f2 @ 83)| f1 <- regA | f2 <-regB]
+
+		//stream = [(f1 @ 65) ^ (f1 @ 92)| f1 <- regA]
+
+		stream = ss1 ^ ss2
+		t1 = [(f1 @ 65) ^ ((f1 @ 90) && (f1 @ 91)) ^ (f1 @ 92) ^ (f2 @ 77) | 
+				f2 <- regB |
+				f1 <- regA ]
+		t2 = [(f2 @ 68) ^ ((f2 @ 81) && (f2 @ 82)) ^ (f2 @ 83) ^ (f1 @ 68) | 
+				f1 <- regA |
+				f2 <- regB ]
+
+		regA = [r1] # [shift f b| f <- regA | b <- t2]
+		regB = [r2] # [shift f b| f <- regB | b <- t1]
+

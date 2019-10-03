@@ -1,0 +1,33 @@
+type N = 128
+
+Wshift_reg_with_bit: [N] -> ([inf],[inf][N])
+Wshift_reg_with_bit reg = (bit,out) //[ f!0 | f <- out ]
+  where 
+    out = [reg] # [(x <<< 1)| x <- out]
+    //reg_first = reg <<< 1
+    bit = [ (f!0 ^ (f@0 || f@1)) | f <- out ]
+
+
+Wshift : [N] -> [N]
+Wshift reg = output 
+  where
+    (bit,out) = Wshift_reg_with_bit reg 
+    output = take`{N}bit 
+
+
+W : [N] -> [inf][N]
+W reg = stream
+  where
+    //keystream = [s!0|s <- stream]
+    stream = [new_reg]#[Wshift x | x <- stream]
+    new_reg = Wshift reg
+
+
+W_stream : [N] -> [N]
+W_stream reg = take`{N} (keystream) //reverse(take`{N}(reverse(take`{N+1}keystream)))
+  where
+    keystream = [ (f@0)@0 | f <- stream ]
+    stream = [(new_reg)]#[r <<< 1| r <-stream]
+    new_reg = take`{N} (W reg)
+
+
