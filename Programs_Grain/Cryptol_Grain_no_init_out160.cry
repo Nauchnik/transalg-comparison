@@ -1,0 +1,37 @@
+H : (Bit,Bit,Bit,Bit,Bit)->Bit
+H (x0, x1, x2, x3, x4) = res
+	where 
+		res = x1 ^ x4 ^ (x0&&x3) ^ (x2&&x3) ^ (x3&&x4) ^ (x0&&x1&&x2) ^ (x0&&x2&&x3) ^ (x0&&x2&&x4) ^ (x1&&x2&&x4) ^ (x2&&x3&&x4)
+	
+type Grain_state = [160]
+
+shift_Grain: Grain_state->Grain_state
+shift_Grain reg = nrs#lrs
+	where
+		yl= (reg@80) ^ (reg@93) ^ (reg@103) ^ (reg@118) ^ (reg@131) ^ (reg@142)
+		lrs = reg@@[81..159]#[yl]		
+		y1 = ((reg@52) &&(reg@45) &&(reg@37) &&(reg@33) &&(reg@28) &&(reg@21)) ^ ((reg@33) &&(reg@28) &&(reg@21)) ^ ((reg@37) &&(reg@33)) ^ (reg@52) ^ (reg@45) ^ (reg@37) ^ (reg@33) ^ (reg@28) ^ (reg@21)
+		y2 = ((reg@33) &&(reg@28) &&(reg@21) &&(reg@15) &&(reg@9)) ^ ((reg@15) &&(reg@9)) ^ (reg@14) ^ (reg@9)
+		y3 = ((reg@63) &&(reg@60) &&(reg@52) &&(reg@45) &&(reg@37)) ^ ((reg@60) &&(reg@52) &&(reg@45)) ^ ((reg@60) &&(reg@52) &&(reg@37) &&(reg@33))
+		y4 = ((reg@63) &&(reg@60) &&(reg@21) &&(reg@15)) ^ ((reg@63) &&(reg@60)) ^ (reg@62) ^ (reg@60)
+		y5 =  (reg@0) ^ ((reg@63) &&(reg@45) &&(reg@28) &&(reg@9))
+		yn = y1 ^ y2 ^ y3 ^ y4 ^ y5 ^ (reg@80)
+		nrs= reg@@[1..79]#[yn]
+		
+Grain_fills: Grain_state->[inf]Grain_state
+Grain_fills init=fills
+	where 
+		fills=[init]#[shift_Grain(s)|s<-fills]
+		
+Grain_stream: Grain_state->[inf]
+Grain_stream init = stream
+	where
+		fills=Grain_fills init
+		stream = [(reg@1) ^ (reg@2) ^ (reg@4) ^ (reg@10) ^ (reg@31) ^ (reg@43) ^ (reg@56) ^ H(reg@83,reg@105,reg@126,reg@144,reg@63) | reg<-fills]
+
+Grain : Grain_state ->[160]
+Grain r = keystream
+	where
+		str = Grain_stream r
+		keystream = str @@[0..159]
+
